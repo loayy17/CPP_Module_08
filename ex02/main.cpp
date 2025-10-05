@@ -41,13 +41,21 @@ void runProgram(MutantStack<int, Container>& mstack) {
 
     while (true) {
         std::cout << "> ";
-        std::cin >> command;
+        if (!(std::cin >> command)) {
+            // Handle Ctrl+D (EOF)
+            std::cout << "\nInput stream closed (Ctrl+D detected). Exiting..." << std::endl;
+            break;
+        }
 
         if (command == "push") {
             if (std::cin >> value) {
                 mstack.push(value);
                 std::cout << value << " pushed onto stack." << std::endl;
             } else {
+                if (std::cin.eof()) {
+                    std::cout << "\nInput stream closed (Ctrl+D detected). Exiting..." << std::endl;
+                    break;
+                }
                 std::cout << "Invalid input. Please enter a valid integer." << std::endl;
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -87,7 +95,10 @@ int main() {
     std::cout << "> ";
 
     std::string containerType;
-    std::cin >> containerType;
+    if (!(std::cin >> containerType)) {
+        std::cout << "\nInput stream closed (Ctrl+D detected). Exiting..." << std::endl;
+        return 0;
+    }
 
     if (containerType == "vector") {
         MutantStack<int, std::vector<int> > mstack;
